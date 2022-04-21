@@ -33,6 +33,28 @@ contract YourCollectible is ERC1155, Ownable {
       _incrementTokenTypeId();
   }
 
+    // Number of gorillas should be greater than or equal to 5 to unlock zebras
+    modifier zebrasAreNotLocked (uint256 _id) {
+        if(_id == 2) {
+            require(balanceOf(_msgSender(), 0) >= 5, "Zebras are locked. You should have at least 5 gorillas to unlock zebras");
+        }
+        _;
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public virtual override zebrasAreNotLocked(id) {
+        
+        if(tokenSupply[id] == 0)
+            require(id == _currentTokenID, "Wrong id provided");
+
+        super.safeTransferFrom(from, to, id, amount, data);
+    }
+  
   /**
 	 * @dev calculates the next token ID based on value of _currentTokenID
 	 * @return uint256 for the next token ID
