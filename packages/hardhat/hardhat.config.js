@@ -1,6 +1,7 @@
 const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
+require('dotenv').config({path:__dirname+'/.env'})
 
 require("@nomiclabs/hardhat-waffle");
 require("@tenderly/hardhat-tenderly");
@@ -11,6 +12,9 @@ require("@eth-optimism/hardhat-ovm");
 require("@nomiclabs/hardhat-ethers");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
+
+const MNEMONIC = process.env.MNEMONIC;
+const INFURA_KEY = process.env.INFURA_KEY;
 
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
@@ -27,16 +31,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 const defaultNetwork = "localhost";
 
 function mnemonic() {
-  try {
-    return fs.readFileSync("./mnemonic.txt").toString().trim();
-  } catch (e) {
-    if (defaultNetwork !== "localhost") {
-      console.log(
-        "☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`."
-      );
-    }
-  }
-  return "";
+  return MNEMONIC;
 }
 
 module.exports = {
@@ -56,7 +51,7 @@ module.exports = {
       */
     },
     rinkeby: {
-      url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      url: `https://rinkeby.infura.io/v3/${INFURA_KEY}`, // <---- YOUR INFURA ID! (or it won't work)
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -190,6 +185,8 @@ module.exports = {
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
+      4: '0x2FC1C54112f1F6E9Bce3914424c30B0eCf72359f',
+
     },
   },
 };
